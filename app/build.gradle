@@ -1,0 +1,60 @@
+apply plugin: 'com.android.application'
+
+android {
+    buildToolsVersion build_version.buildToolsVersion
+    compileSdkVersion build_version.compileSdkVersion
+
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        applicationId "com.df.module.modulemvp"
+        minSdkVersion build_version.minSdkVersion
+        targetSdkVersion build_version.targetSdkVersion
+        versionCode build_version.versionCode
+        versionName build_version.versionName
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+                includeCompileClasspath true
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField "boolean", "IS_BUILD_MODULE", "${isBuildModule}"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            buildConfigField "boolean", "IS_BUILD_MODULE", "${isBuildModule}"
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':common_bussiness')
+    implementation project(':common_core')
+
+    if (!isBuildModule.toBoolean()) {
+        runtimeOnly project(':index_module')
+    }
+
+
+    annotationProcessor libs.butterknife_compiler
+
+    testImplementation libs.junit
+    androidTestImplementation libs.runner
+    androidTestImplementation libs.espresso
+}

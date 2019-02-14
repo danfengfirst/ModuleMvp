@@ -1,0 +1,11 @@
+apply from: "../module_build.gradle"
+
+android {
+    resourcePrefix "index_"
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':common_bussiness')
+    implementation project(':common_core')
+}
